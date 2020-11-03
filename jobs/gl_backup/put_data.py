@@ -15,10 +15,10 @@ def search(pattern):
     target_filename = None
     target_file_path = None
     for parent, dirnames, filenames in os.walk(GL_BACKUP_LOCAL_PATH):
-         for filename in filenames:
+        for filename in filenames:
             if filename.find(pattern) != -1:
                 target_filename = filename
-                target_file_path = os.path.abspath(os.path.join(parent,filename))
+                target_file_path = os.path.abspath(os.path.join(parent, filename))
                 break
 
     return target_filename, target_file_path
@@ -31,11 +31,14 @@ def put_data(date):
         try:
             ftp = FTP()
             logging.info("Connecting X-Lab Server %s:%s" % (X_LAB_FTP_HOST, X_LAB_FTP_PORT))
+            # print("Connecting X-Lab Server %s:%s" % (X_LAB_FTP_HOST, X_LAB_FTP_PORT))
             ftp.connect(X_LAB_FTP_HOST, X_LAB_FTP_PORT)
             ftp.login(X_LAB_FTP_USER, X_LAB_FTP_PWD.decode("base64"))
         except Exception as e:
             logging.error("Failed to connect X-Lab Server %s:%s" % (X_LAB_FTP_HOST, X_LAB_FTP_PORT))
             logging.error(str(e))
+            # print("Failed to connect X-Lab Server %s:%s" % (X_LAB_FTP_HOST, X_LAB_FTP_PORT))
+            # print(str(e))
             exit(1)
 
         try:
@@ -43,10 +46,13 @@ def put_data(date):
         except Exception as e:
             logging.error("Failed to change directory")
             logging.error(str(e))
+            # print("Failed to change directory")
+            # print(str(e))
             exit(1)
 
         try:
             logging.info("Uploading %s" % filename)
+            # print("Uploading %s" % filename)
             f = open(file_path, "rb")
             ftp.storbinary("STOR %s" % filename, f)
             f.close()
@@ -55,7 +61,13 @@ def put_data(date):
         except Exception as e:
             logging.error("Failed to upload backup file: %s" % file_path)
             logging.error(str(e))
+            # print("Failed to upload backup file: %s" % file_path)
+            # print(str(e))
             exit(1)
+
+    else:
+        logging.warning("No backup file.")
+        # print("No backup file.")
 
 
 if __name__ == "__main__":
