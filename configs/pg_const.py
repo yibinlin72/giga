@@ -6,7 +6,7 @@ from os.path import join as path_join
 # basic configuration
 # =================================
 # 專案路徑
-PROJECT_ROOT = "/Users/yibinlin72/Project/giga"
+PROJECT_ROOT = "/mnt/d/YB-gigalinktek/Code"
 
 # =================================
 # log configuration
@@ -23,6 +23,6 @@ LOG_GL_BACKUP_PATH = path_join(LOG_ROOT, "gl_backup.log")
 # GL_BACKUP_REMOTE_PATH = "/Remote Backup/Gigalink/Gigalink FW"
 
 # Test
-GL_BACKUP_LOCAL_PATH = "/Users/yibinlin72/backups"
-GL_BACKUP_REMOTE_PATH = "/Remote Backup/Gigalink/Gigalink FW"
+GL_BACKUP_LOCAL_PATH = "/mnt/d/YB-gigalinktek/Backup"
+GL_BACKUP_REMOTE_PATH = "Remote Backup/Gigalink/Gigalink FW"
 

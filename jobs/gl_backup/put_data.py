@@ -12,7 +12,6 @@ logging = Log.init_logging(__name__)
 
 
 def search(pattern):
-
     target_filename = None
     target_file_path = None
     for parent, dirnames, filenames in os.walk(GL_BACKUP_LOCAL_PATH):
@@ -26,25 +25,37 @@ def search(pattern):
 
 
 def put_data(date):
-
     filename, file_path = search(date)
 
     if filename is not None:
         try:
             ftp = FTP()
-            print "Connecting ", X_LAB_FTP_HOST, X_LAB_FTP_PORT
+            logging.info("Connecting X-Lab Server %s:%s" % (X_LAB_FTP_HOST, X_LAB_FTP_PORT))
             ftp.connect(X_LAB_FTP_HOST, X_LAB_FTP_PORT)
             ftp.login(X_LAB_FTP_USER, X_LAB_FTP_PWD.decode("base64"))
-            ftp.cwd(GL_BACKUP_REMOTE_PATH)
+        except Exception as e:
+            logging.error("Failed to connect X-Lab Server %s:%s" % (X_LAB_FTP_HOST, X_LAB_FTP_PORT))
+            logging.error(str(e))
+            exit(1)
 
-            print "Uploading ", filename
+        try:
+            ftp.cwd(GL_BACKUP_REMOTE_PATH)
+        except Exception as e:
+            logging.error("Failed to change directory")
+            logging.error(str(e))
+            exit(1)
+
+        try:
+            logging.info("Uploading %s" % filename)
             f = open(file_path, "rb")
             ftp.storbinary("STOR %s" % filename, f)
             f.close()
 
             ftp.quit()
-        except:
-            print "Failed to upload backup file: ", file_path
+        except Exception as e:
+            logging.error("Failed to upload backup file: %s" % file_path)
+            logging.error(str(e))
+            exit(1)
 
 
 if __name__ == "__main__":
@@ -58,6 +69,6 @@ if __name__ == "__main__":
             yesterday = datetime.now() - timedelta(days=1)
             date = datetime.strftime(yesterday, "%Y_%m_%d")
     elif len(sys.argv) == 2:
-        date = sys.argv[2]
+        date = sys.argv[1]
 
     put_data(date)
